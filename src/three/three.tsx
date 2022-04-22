@@ -1,16 +1,21 @@
-import React, { FC } from 'react';
+import React, { ComponentProps, FC } from 'react';
 
 import { Node } from './types';
-import './three.css';
 import { ThreeNode } from './three-node';
 
-type Props = {
+import './three.css';
+
+type ThreeNodeProps = ComponentProps<typeof ThreeNode>;
+
+type Props = Pick<ThreeNodeProps, 'onRenderLabel' | 'children'> & {
   nodes: Node[];
 };
 
 export const Three: FC<Props> = (props) => {
   const {
     nodes,
+    children,
+    onRenderLabel,
   } = props;
 
   return (
@@ -19,7 +24,10 @@ export const Three: FC<Props> = (props) => {
         <ThreeNode 
           key={node.id}
           node={node}
-        />
+          onRenderLabel={onRenderLabel}
+        >
+          {children}
+        </ThreeNode>
       ))}
     </ul>
   );

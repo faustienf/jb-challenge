@@ -1,0 +1,9 @@
+.node-label {
+  font: inherit;
+  color: #fff;
+  font-size: 18px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+}
+  
