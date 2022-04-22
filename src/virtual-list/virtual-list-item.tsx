@@ -4,12 +4,13 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
+import { Index } from 'types/opaque';
 
 import './virtual-list-item.css';
 
 type Props = {
-  index: number;
-  onRender: (element: HTMLLIElement, index: number) => void;
+  index: Index;
+  onRender: (element: HTMLLIElement, index: Index) => void;
 }
 
 export const VirtualListItem: FC<PropsWithChildren<Props>> = (props) => {

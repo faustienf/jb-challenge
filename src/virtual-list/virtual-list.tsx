@@ -8,6 +8,7 @@ import React, {
     useState
 } from 'react';
 
+import { Index, Opaque } from 'types/opaque';
 import { binarySearch } from 'utils/binary-search';
 import { VirtualListItem } from './virtual-list-item';
 
@@ -17,6 +18,8 @@ type Props = ComponentProps<'div'> & {
   minRows: number;
 }
 
+type Offset = Opaque<number, 'Offset'>;
+
 export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
   const {
     children,
@@ -25,8 +28,8 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
     ...divProps
   } = props;
 
-  const [start, setStart] = useState(0);
-  const offsetsRef = useRef<number[]>([]);
+  const [start, setStart] = useState(0 as Index);
+  const offsetsRef = useRef<Offset[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
   
   const threshold = useMemo(
@@ -35,13 +38,14 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
   );
 
   const handleItemRender = useCallback(
-    (itemElement: HTMLLIElement, index: number) => {
+    (itemElement: HTMLLIElement, index: Index) => {
       const offsets = offsetsRef.current;
       const rootEl = rootRef.current;
-      
+      const clientHeight = itemElement.clientHeight as Offset;
+
       offsets[index] = index 
-        ? itemElement.clientHeight + offsets[index - 1]
-        : itemElement.clientHeight;
+        ? clientHeight + offsets[index - 1] as Offset
+        : clientHeight;
   
       itemElement.style.removeProperty('visibility');
       itemElement.style.setProperty(
@@ -64,7 +68,7 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
       return (
         <VirtualListItem
           key={index}
-          index={index}
+          index={index as Index}
           onRender={handleItemRender}
         >
           {child}
@@ -97,7 +101,7 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
         return offset - scrollTop;
       });
 
-      const nextStart = Math.max(foundIndex - threshold, 0);
+      const nextStart = Math.max(foundIndex - threshold, 0) as Index;
       setStart(nextStart);
     },
     [threshold],

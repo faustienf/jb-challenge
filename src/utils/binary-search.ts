@@ -1,3 +1,5 @@
+import { Index } from "types/opaque";
+
 /**
  * классический алгоритм бинарного поиска,
  * только для сравнения элементов используется компаратор
@@ -12,13 +14,13 @@
  */
 export const binarySearch = <V extends any>(
   array: V[],
-  comparator: (value: V, index: number) => number,
-): [undefined | V, number] => {
+  comparator: (value: V, index: Index) => number,
+): [undefined | V, Index | -1] => {
   let start = 0;
   let end = array.length - 1;
     
   while (start <= end) {
-    const middleIndex = Math.floor((start + end) / 2);
+    const middleIndex = Math.floor((start + end) / 2) as Index;
     const position = comparator(array[middleIndex], middleIndex);
     
     // found!!!
