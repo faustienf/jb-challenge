@@ -1,34 +1,26 @@
-import React, { ComponentProps, FC } from 'react';
+import React, { FC, PropsWithChildren, ReactNode } from 'react';
 
 import { Node } from './types';
-import { ThreeNode } from './three-node';
 
 import './three.css';
 
-type ThreeNodeProps = ComponentProps<typeof ThreeNode>;
-
-type Props = Pick<ThreeNodeProps, 'onRenderLabel' | 'children'> & {
-  nodes: Node[];
+type Props = {
+  node: Node;
+  onRenderLabel: (node: Node) => ReactNode;
+  // children?: (childNodes: Node[]) => ReactNode;
 };
 
-export const Three: FC<Props> = (props) => {
+export const Three: FC<PropsWithChildren<Props>> = (props) => {
   const {
-    nodes,
+    node,
     children,
     onRenderLabel,
   } = props;
 
   return (
-    <ul className="three">
-      {nodes.map(node => (
-        <ThreeNode 
-          key={node.id}
-          node={node}
-          onRenderLabel={onRenderLabel}
-        >
-          {children}
-        </ThreeNode>
-      ))}
-    </ul>
+    <div className="three">
+      {onRenderLabel(node)}
+      {children}
+    </div>
   );
 };

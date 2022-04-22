@@ -1,4 +1,17 @@
 .app {
   width: 800px;
-  height: 400px;
+}
+
+.app-list {
+  max-height: 500px;
+  border: 2px dotted #fff;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.app-sub-list {
+  max-height: 250px;
+  border: 1px dotted #fff;
+  padding: 10px;
+  border-radius: 10px;
 }
