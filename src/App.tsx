@@ -8,7 +8,7 @@ import { useBooleanMap } from './hooks/use-boolean-map';
 import { VirtualList } from './virtual-list';
 import { nodesSample } from './nodes-sample';
 
-import './app.css';
+import './App.css';
 
 export const App = () => {
   const [collapsed, onToggleCollapsed] = useBooleanMap<ID>();
