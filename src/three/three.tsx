@@ -7,7 +7,6 @@ import './three.css';
 type Props = {
   node: Node;
   onRenderLabel: (node: Node) => ReactNode;
-  // children?: (childNodes: Node[]) => ReactNode;
 };
 
 export const Three: FC<PropsWithChildren<Props>> = (props) => {

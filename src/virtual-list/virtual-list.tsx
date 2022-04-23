@@ -50,7 +50,7 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
       itemElement.style.removeProperty('visibility');
       itemElement.style.setProperty(
         'transform',
-        `translateY(${offsets[index] - itemElement.clientHeight}px)`
+        `translateY(${offsets[index] - clientHeight}px)`
       );
 
       const lastOffset = offsets[offsets.length - 1];
