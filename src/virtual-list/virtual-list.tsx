@@ -30,19 +30,20 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
   const [startIndex, setStartIndex] = useState(0 as Index);
   const offsetsRef = useRef<number[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<HTMLUListElement>(null);
   
   const threshold = useMemo(
     () => Math.ceil((displayRows + 1) / 2),
     [displayRows],
   );
 
-  const defineRootHeight = useCallback(
+  const defineItemsHeight = useCallback(
     () => {
       const offsets = offsetsRef.current;
       const lastOffset = offsets[offsets.length - 1];
-      const rootEl = rootRef.current;
-      if (rootEl) {
-        rootEl.style.setProperty('height', `${lastOffset}px`);
+      const itemsEl = itemsRef.current;
+      if (itemsEl) {
+        itemsEl.style.setProperty('height', `${lastOffset}px`);
       }
     },
     [],
@@ -60,7 +61,7 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
 
       // redefine offsets by diff
       const diff = offsets[index] - prevOffset;
-      if (offsets[index] !== prevOffset && diff > 0) {
+      if (diff > 0) {
         for (
           let nextIndex = index + 1 as Index;
           nextIndex < offsets.length;
@@ -84,9 +85,9 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
       itemElement.style.visibility = '';
       itemElement.style.transform = `translateY(${offset - clientHeight}px)`;
 
-      defineRootHeight();
+      defineItemsHeight();
     },
-    [calcOffsets, defineRootHeight],
+    [calcOffsets, defineItemsHeight],
   );
 
   const allItems = useMemo(
@@ -134,7 +135,8 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
       ref={rootRef}
       className={`virtual-list ${className}`}
     >
-      <ul 
+      <ul
+        ref={itemsRef}
         className="virtual-list-items"
       >
         {sliceItems.map((item, index) => (
