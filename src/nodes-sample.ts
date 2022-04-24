@@ -6,7 +6,7 @@ export const nodesSample: Node[] = [
   {
     id: 'ID' as ID,
     label: 'Root node',
-    children: Array(300)
+    children: Array(3000)
       .fill(0)
       .map((_, i) => ({
         id: `ID-${i}` as ID,

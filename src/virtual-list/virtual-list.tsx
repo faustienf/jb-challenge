@@ -81,7 +81,7 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
 
       const offset = calcOffsets(clientHeight, index);
 
-      itemElement.style.visibility = 'visible';
+      itemElement.style.visibility = '';
       itemElement.style.transform = `translateY(${offset - clientHeight}px)`;
 
       defineRootHeight();
