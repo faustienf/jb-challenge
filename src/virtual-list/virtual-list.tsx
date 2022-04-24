@@ -8,86 +8,102 @@ import React, {
     useState
 } from 'react';
 
-import { Index, Opaque } from 'types/opaque';
+import { Index } from 'types/opaque';
 import { binarySearch } from 'utils/binary-search';
+import { usePassiveScroll } from './use-passive-scroll';
 import { VirtualListItem } from './virtual-list-item';
 
 import './virtual-list.css';
 
 type Props = ComponentProps<'div'> & {
-  minRows: number;
+  displayRows: number; // how many rows you expect to see
 }
-
-type Offset = Opaque<number, 'Offset'>;
 
 export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
   const {
     children,
-    minRows,
+    displayRows,
     className = '',
     ...divProps
   } = props;
 
-  const [start, setStart] = useState(0 as Index);
-  const offsetsRef = useRef<Offset[]>([]);
+  const [startIndex, setStartIndex] = useState(0 as Index);
+  const offsetsRef = useRef<number[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
   
   const threshold = useMemo(
-    () => Math.ceil((minRows + 1) / 2),
-    [minRows],
+    () => Math.ceil((displayRows + 1) / 2),
+    [displayRows],
   );
 
-  const handleItemRender = useCallback(
-    (itemElement: HTMLLIElement, index: Index) => {
+  const defineRootHeight = useCallback(
+    () => {
       const offsets = offsetsRef.current;
-      const rootEl = rootRef.current;
-      const clientHeight = itemElement.clientHeight as Offset;
-
-      offsets[index] = index 
-        ? clientHeight + offsets[index - 1] as Offset
-        : clientHeight;
-  
-      itemElement.style.removeProperty('visibility');
-      itemElement.style.setProperty(
-        'transform',
-        `translateY(${offsets[index] - clientHeight}px)`
-      );
-
       const lastOffset = offsets[offsets.length - 1];
-      
+      const rootEl = rootRef.current;
       if (rootEl) {
-        rootEl.style.setProperty('height', `${lastOffset}px`)
+        rootEl.style.setProperty('height', `${lastOffset}px`);
       }
     },
     [],
   );
 
-  const allItems = useMemo(
-    () => React.Children
-    .map(children, (child, index) => {
-      return (
-        <VirtualListItem
-          key={index}
-          index={index as Index}
-          onRender={handleItemRender}
-        >
-          {child}
-        </VirtualListItem>
-      );
-    }),
-    [children, handleItemRender],
+  const calcOffsets = useCallback(
+    (height: number, index: Index) => {
+      const offsets = offsetsRef.current;
+
+      const prevOffset = offsets[index] || 0;
+
+      offsets[index] = index 
+          ? height + offsets[index - 1]
+          : height;
+
+      // redefine offsets by diff
+      const diff = offsets[index] - prevOffset;
+      if (offsets[index] !== prevOffset && diff > 0) {
+        for (
+          let nextIndex = index + 1 as Index;
+          nextIndex < offsets.length;
+          ++nextIndex
+        ) {
+          offsets[nextIndex] += diff;
+        }
+      }
+
+      return offsets[index];
+    },
+    [],
   );
 
-  const items = useMemo(
-    () => allItems?.slice(start, start + minRows + (threshold * 2)),
-    [allItems, minRows, start, threshold],
+  const handleItemRender = useCallback(
+    (itemElement: HTMLLIElement, index: Index) => {
+      const clientHeight = itemElement.clientHeight;
+
+      const offset = calcOffsets(clientHeight, index);
+
+      itemElement.style.visibility = 'visible';
+      itemElement.style.transform = `translateY(${offset - clientHeight}px)`;
+
+      defineRootHeight();
+    },
+    [calcOffsets, defineRootHeight],
+  );
+
+  const allItems = useMemo(
+    () => React.Children.toArray(children),
+    [children],
+  );
+
+  const sliceItems = useMemo(
+    () => allItems?.slice(startIndex, startIndex + displayRows + (threshold * 2)),
+    [allItems, displayRows, startIndex, threshold],
   );
 
   const handleScroll = useCallback(
-    (e: React.UIEvent) => {
+    (e: Event) => {
       const {
         scrollTop,
-      } = e.currentTarget;
+      } = e.target as Element;
 
       const offsets = offsetsRef.current;
 
@@ -101,10 +117,15 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
         return offset - scrollTop;
       });
 
-      const nextStart = Math.max(foundIndex - threshold, 0) as Index;
-      setStart(nextStart);
+      const nextStartIndex = Math.max(foundIndex - threshold, 0) as Index;
+      setStartIndex(nextStartIndex);
     },
     [threshold],
+  );
+
+  usePassiveScroll(
+    rootRef,
+    handleScroll,
   );
 
   return (
@@ -112,11 +133,19 @@ export const VirtualList: FC<PropsWithChildren<Props>> = (props) => {
       {...divProps}
       ref={rootRef}
       className={`virtual-list ${className}`}
-      onScroll={handleScroll}  
     >
       <ul 
-        className="virtual-list-items">
-        {items}
+        className="virtual-list-items"
+      >
+        {sliceItems.map((item, index) => (
+          <VirtualListItem
+            key={startIndex + index}
+            index={startIndex + index as Index}
+            onRender={handleItemRender}
+          >
+            {item}
+          </VirtualListItem>
+        ))}
       </ul>
     </div>
   );

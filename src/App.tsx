@@ -33,7 +33,7 @@ export const App = () => {
       >
         {collapsed.get(childNode.id) && (
           <VirtualList
-            minRows={5}
+            displayRows={5}
             className="app-sub-list"
           >
             {onRenderChildNodes(childNode.children)}
@@ -53,7 +53,7 @@ export const App = () => {
         >
           {collapsed.get(node.id) && (
             <VirtualList
-              minRows={10}
+              displayRows={10}
               className="app-list"
             >
               {onRenderChildNodes(node.children)}
