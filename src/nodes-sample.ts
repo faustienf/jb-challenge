@@ -1,7 +1,7 @@
 import { Node } from "three";
 import { ID } from "types/opaque";
 
-// 90001 nodes
+// 900001 nodes
 export const nodesSample: Node[] = [
   {
     id: 'ID' as ID,
