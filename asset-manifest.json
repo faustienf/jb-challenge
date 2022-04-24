@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/jb-challenge/static/css/main.712c56ea.css",
-    "main.js": "/jb-challenge/static/js/main.a6695fb4.js",
+    "main.js": "/jb-challenge/static/js/main.27ae1403.js",
     "static/js/787.b20ff446.chunk.js": "/jb-challenge/static/js/787.b20ff446.chunk.js",
     "index.html": "/jb-challenge/index.html",
     "main.712c56ea.css.map": "/jb-challenge/static/css/main.712c56ea.css.map",
-    "main.a6695fb4.js.map": "/jb-challenge/static/js/main.a6695fb4.js.map",
+    "main.27ae1403.js.map": "/jb-challenge/static/js/main.27ae1403.js.map",
     "787.b20ff446.chunk.js.map": "/jb-challenge/static/js/787.b20ff446.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.712c56ea.css",
-    "static/js/main.a6695fb4.js"
+    "static/js/main.27ae1403.js"
   ]
 }
