@@ -19,7 +19,7 @@ export const Three: FC<PropsWithChildren<Props>> = (props) => {
   return (
     <div className="three">
       {onRenderLabel(node)}
-      {children}
+      {node.children.length > 0 && children}
     </div>
   );
 };
