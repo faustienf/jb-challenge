@@ -1,4 +1,4 @@
-# JetBrainer Challenge
+# jetbrains Challenge
 
 [Demo](https://faustienf.github.io/jb-challenge)
 
